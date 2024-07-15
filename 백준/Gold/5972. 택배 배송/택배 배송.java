@@ -1,3 +1,4 @@
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -58,32 +59,32 @@ public class Main {
     }
 
     private static void moving(int start, int len) {
-        PriorityQueue<Road> p = new PriorityQueue<>();
-        p.add(new Road(start,len)); //현재 위치를 넣고
-        Arrays.fill(dist, Integer.MAX_VALUE);
-        dist[start] = 0;
+        PriorityQueue<Road> nowPoint = new PriorityQueue<>();
+        nowPoint.add(new Road(start,len)); //현재 위치를 넣고
+        Arrays.fill(dist, Integer.MAX_VALUE); //누적치 채워두고
+        dist[start] = 0; //스타트 지점 누적치 0
 
-        while (!p.isEmpty()){
-            Road road = p.poll();
-            int city = road.now;
+        while (!nowPoint.isEmpty()){
+            Road nowRoad = nowPoint.poll(); //현재 위치
+            int city = nowRoad.now;
 
             if(visited[city] == true){
                 continue;
             }
 
-            visited[road.now] = true;
+            visited[nowRoad.now] = true;
 
-            for(int i=0; i<list[road.now].size(); i++){
+            for(int i=0; i<list[nowRoad.now].size(); i++){
                 //인접 노드 꺼내
-                Road a = list[road.now].get(i);
+                Road a = list[nowRoad.now].get(i); //인접 노드 저장
 
                 if(visited[a.now] == true){
                     continue;
                 }
 
-                if(dist[a.now] > dist[road.now] + a.val){
-                    dist[a.now] = dist[road.now] + a.val;
-                    p.add(new Road(a.now, dist[a.now]));
+                if(dist[a.now] > dist[nowRoad.now] + a.val){
+                    dist[a.now] = dist[nowRoad.now] + a.val;
+                    nowPoint.add(new Road(a.now, dist[a.now]));
                 }
 
             }
