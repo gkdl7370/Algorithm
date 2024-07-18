@@ -2,31 +2,24 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
 public class Main {
-    static int n;
-    static int m;
-    static ArrayList<Tree> list[];
-    static boolean visited[];
-    static int count;
-    static int max;
-    static class Tree implements Comparable<Tree>{
+    static int parent[];
+    static class Node implements Comparable<Node>{
 
-        int now;
+        int start;
+        int end;
         int val;
 
-
-        Tree(int now, int val){
-            this.now = now;
-            this.val = val;
-
+        public Node(int a, int b, int c){
+            this.start = a;
+            this.end = b;
+            this.val = c;
         }
-
         @Override
-        public int compareTo(Tree o) {
+        public int compareTo(Node o) {
             return this.val - o.val;
         }
     }
@@ -34,64 +27,66 @@ public class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
 
-        n = Integer.parseInt(st.nextToken());
-        m = Integer.parseInt(st.nextToken());
+        int n = Integer.parseInt(st.nextToken());
+        int m = Integer.parseInt(st.nextToken());
 
-        list = new ArrayList[n+1];
-        visited = new boolean[n+1];
+        parent = new int[n+1];
 
-        for(int i=0; i<=n; i++){
-            list[i] = new ArrayList<>();
+        for(int i=1; i<=n; i++){
+            parent[i] = i;//최상위 노드 초기화
         }
+
+        PriorityQueue<Node> p = new PriorityQueue<>();
 
         for(int i=0; i<m; i++){
             st = new StringTokenizer(br.readLine());
             int start = Integer.parseInt(st.nextToken());
             int end = Integer.parseInt(st.nextToken());
             int val = Integer.parseInt(st.nextToken());
-
-            list[start].add(new Tree(end,val));
-            list[end].add(new Tree(start,val));
+            p.add(new Node(start,end,val));
         }
 
-        count = 0;
-        moving(1,0);
+        int sum=0;
+        int max=0;
+        int line=0;
 
-        System.out.println(count-max);
+        while (!p.isEmpty() && line < n-1){
+
+            Node now = p.poll();
+
+            int start = find(now.start);//부모노드 찾고
+            int end = find(now.end);
+
+            if(!same(start,end)){ //같이 안이어져있으면
+                sum += now.val;
+                union(start,end);
+                line++;
+                max = Math.max(max,now.val);
+            }
+        }
+
+        System.out.println(sum-max);
     }
 
-    private static void moving(int now, int val) {
-        PriorityQueue<Tree> nowPoint = new PriorityQueue<>();
-        nowPoint.add(new Tree(now,val));
+    private static void union(int start, int end) {
 
-        max = val;
-
-        while (!nowPoint.isEmpty()){
-            Tree nowNode = nowPoint.poll();
-
-            if(visited[nowNode.now] == true){
-                continue;
-            }
-
-
-            visited[nowNode.now] = true;
-            max = Math.max(max, nowNode.val);
-            count += nowNode.val;
-
-            for(int i=0; i<list[nowNode.now].size(); i++){ //인접 노드를 찾고
-                Tree nextNode = list[nowNode.now].get(i);
-
-                if(visited[nextNode.now]){
-                    continue;
-                }
-
-
-                nowPoint.add(new Tree(nextNode.now, nextNode.val));
-
-            }
-
+        if(start!=end){
+            parent[end] = start;
         }
+    }
 
+    private static boolean same(int start, int end) {
 
+        return start == end;
+    }
+
+    private static int find(int start) {
+        if(parent[start] == start){
+            return start;
+        } else{
+            int a = find(parent[start]);
+            parent[start] = a;
+            return a;
+        }
     }
 }
