@@ -69,15 +69,19 @@ public class Main {
     }
 
     private static void union(int start, int end) {
+        int a = find(start);
+        int b = find(end);
 
-        if(start!=end){
-            parent[end] = start;
+        if(a!=b){
+            parent[b] = a;
         }
     }
 
     private static boolean same(int start, int end) {
+        int a = find(start);
+        int b = find(end);
 
-        return start == end;
+        return a == b;
     }
 
     private static int find(int start) {
