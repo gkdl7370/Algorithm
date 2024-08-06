@@ -1,7 +1,7 @@
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.PriorityQueue;
 import java.util.StringTokenizer;
@@ -9,7 +9,6 @@ import java.util.StringTokenizer;
 public class Main {
     static int n;
     static int k;
-    static ArrayList<Point> list[];
     static boolean visited[];
     static int dist[];
     static class Point implements Comparable<Point>{
@@ -36,18 +35,13 @@ public class Main {
         if(n>=k){
             visited = new boolean[n+2];
             dist = new int[n+2];
-            list = new ArrayList[n+2];
         } else{
             visited = new boolean[k+2];
             dist = new int[k+2];
-            list = new ArrayList[k+2];
         }
 
         Arrays.fill(dist,Integer.MAX_VALUE);
 
-        for(int i=0; i<k+2; i++){
-            list[i] = new ArrayList<>();
-        }
 
         bfs(n,0);
 
