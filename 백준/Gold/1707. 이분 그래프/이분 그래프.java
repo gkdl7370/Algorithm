@@ -38,10 +38,9 @@ public class Main {
                 graph[v].add(u);
             }
 
-            // 모든 컴포넌트를 검사하여 이분 그래프 판별
-            for (int j = 1; j <= nodes; j++) {
-                if (color[j] == 0) {
-                    bfs(j); // 각 컴포넌트에 대해 BFS 탐색
+            for(int k=1; k<=nodes; k++){
+                if(color[k] == 0){
+                    bfs(k);
                 }
             }
 
@@ -50,23 +49,30 @@ public class Main {
     }
 
     private static void bfs(int start) {
-        Queue<Integer> queue = new LinkedList<>();
-        queue.add(start);
-        color[start] = 1; // 시작 노드에 색상 1 할당
+        Queue<Integer> q = new LinkedList<>();
+        q.add(start);
+        color[start] = 1; //시작노드는 1 반대노드는 2
 
-        while (!queue.isEmpty() && isBipartite) {
-            int node = queue.poll();
+        while (!q.isEmpty()){
+            int num = q.poll();
 
-            for (int i = 0; i < graph[node].size(); i++) {
-                int neighbor = graph[node].get(i);
-                if (color[neighbor] == 0) {
-                    color[neighbor] = (color[node] == 1) ? 2 : 1; // 인접 노드에 반대 색상 할당
-                    queue.add(neighbor);
-                } else if (color[neighbor] == color[node]) {
+            for(int i=0; i<graph[num].size(); i++){
+                int nx = graph[num].get(i);
+
+                if(color[nx] == color[num]){
                     isBipartite = false;
                     return;
+                } else if(color[nx] == 0){
+                    if(color[num] == 1){
+                        color[nx] = 2;
+                        q.add(nx);
+                    } else {
+                        color[nx] = 1;
+                        q.add(nx);
+                    }
                 }
             }
+
         }
     }
 }
