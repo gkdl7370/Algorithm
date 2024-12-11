@@ -35,18 +35,23 @@ public class Main {
     }
 
     private static int dfs(int x, int y) {
-        if (visited[x][y] != 0) {
+
+        if(visited[x][y] != 0){
             return visited[x][y];
         }
+        visited[x][y] = 1; //시작은 1
 
-        visited[x][y] = 1; // 기본적으로 현재 위치에서 시작할 수 있는 최댓값은 1
-        for (int i = 0; i < 4; i++) {
+        for(int i=0; i<4; i++){
             int nx = x + dx[i];
             int ny = y + dy[i];
 
-            if (nx < 0 || ny < 0 || nx >= n || ny >= n) continue;
-            if (map[x][y] < map[nx][ny]) { // 이동 조건: 대나무가 더 많아야 함
-                visited[x][y] = Math.max(visited[x][y], dfs(nx, ny) + 1);
+            if(nx<0 || ny<0 || nx>=n || ny>=n) continue;
+
+            if(map[x][y]<map[nx][ny]){
+                int count = dfs(nx,ny) + 1;
+                if(count > visited[x][y]){
+                    visited[x][y] = count;
+                }
             }
         }
 
