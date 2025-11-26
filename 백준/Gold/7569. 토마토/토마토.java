@@ -1,142 +1,126 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class Main {
-    static int arr1[]={0,1,-1,0};
-    static int arr2[]={1,0,0,-1};
-    static int m;
-    static int n;
-    static int h;
-    static ArrayList<int[][]> list;
-    static class Node{
-        int x;
-        int y;
-        int height;
-        public Node(int x, int y, int height){
-            this.x = x;
-            this.y = y;
-            this.height = height;
-        }
-    }
-    static Queue<Node> q = new LinkedList<>();
-    static Queue<Node> q2 = new LinkedList<>();
-
-    public static void main(String args[]) throws IOException {
+    static int dx[] = {1,0,-1,0};
+    static int dy[] = {0,1,0,-1};
+    static int n,m,c;
+    static int zero = 0;
+    static int map[][][];
+    static boolean vit[][][];
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-
         m = Integer.parseInt(st.nextToken());
         n = Integer.parseInt(st.nextToken());
-        h = Integer.parseInt(st.nextToken());
+        c = Integer.parseInt(st.nextToken());
 
-        list = new ArrayList<>(h);
+        map = new int[c][n][m];
+        vit = new boolean[c][n][m];
 
-        for(int i = 0; i<h; i++){
-            int[][] array = new int[n][m];
-            list.add(array);
-        }
+        Queue<int[]> q = new LinkedList<>();
 
-        boolean check = false;
-        for(int l=0; l<h; l++){
-            for(int i=0; i<n; i++){
+
+        for(int i=0; i<c; i++){
+            for(int j=0; j<n; j++){
                 st = new StringTokenizer(br.readLine());
-                for(int j=0; j<m; j++){
-                    list.get(l)[i][j] = Integer.parseInt(st.nextToken());
-                    if(list.get(l)[i][j] == 0 && check == false) check = true;
-                    if(list.get(l)[i][j] == 1) q.add(new Node(i,j,l));
+                for(int k=0; k<m; k++){
+                    map[i][j][k] = Integer.parseInt(st.nextToken());
+                    if(map[i][j][k] == 1){
+                        q.add(new int[]{i,j,k});
+                        vit[i][j][k] = true;
+                    }
+                    if(map[i][j][k] == 0){
+                        zero++;
+                    }
                 }
             }
         }
 
-        if(check == false){
+        if(zero == 0){
             System.out.println(0);
             return;
         }
 
-        int day=0;
 
-        while (!q.isEmpty()){
-            bfs();
-            day = day + 1;
-        }
+        int val = bfs(q);
 
-        check = false;
 
-        for(int l=0; l<h; l++){
-            for(int i=0; i<n; i++){
-                for(int j=0; j<m; j++){
-                    if(list.get(l)[i][j] == 0){
-                        check = true;
-                        break;
-                    }
-                }
-                if(check == true) break;
-            }
-            if(check == true) break;
-        }
+        if(zero == 0) System.out.println(val);
+        else System.out.println(-1);
 
-        if(check == true){
-            System.out.println(-1);
-        } else{
-            System.out.println(day-1);
-        }
 
     }
 
-    private static void bfs() {
+    private static int bfs(Queue<int[]> q) {
+        int time = 0;
 
         while (!q.isEmpty()){
-            Node poll = q.poll();
-
-            int nowX = poll.x;
-            int nowY = poll.y;
-            int height = poll.height;
-
-            if(h == 2){
-                if(height == 0){
-                    if(list.get(height+1)[nowX][nowY] == 0) {
-                        list.get(height+1)[nowX][nowY] = 1;
-                        q2.add(new Node(nowX,nowY,height+1));
-                    }
-                } else if(height == 1){
-                    if(list.get(height-1)[nowX][nowY] == 0) {
-                        list.get(height-1)[nowX][nowY] = 1;
-                        q2.add(new Node(nowX,nowY,height-1));
-                    }
-                }
-
-            } else if(h > 2){
-                if(height-1 >=0 && list.get(height-1)[nowX][nowY] == 0){
-                    list.get(height-1)[nowX][nowY] = 1;
-                    q2.add(new Node(nowX,nowY,height-1));
-                }
-                if(height+1<h && list.get(height+1)[nowX][nowY] == 0){
-                    list.get(height+1)[nowX][nowY] = 1;
-                    q2.add(new Node(nowX,nowY,height+1));
-                }
+            if(zero == 0) {
+                return time;
             }
 
-            for(int i=0; i<4; i++){
-                int nextX = nowX + arr1[i];
-                int nextY = nowY + arr2[i];
-                if(nextX < 0 || nextY < 0 || nextX >= n || nextY >= m) continue;
-                if(list.get(height)[nextX][nextY] == 0){
-                    list.get(height)[nextX][nextY] = 1;
-                    q2.add(new Node(nextX,nextY,height));
-                } else if(list.get(height)[nextX][nextY] == -1){
-                    continue;
+            time++;
+            int repeat = q.size();
+
+
+
+            for(int t=0; t<repeat; t++){
+                int[] poll = q.poll();
+                int h = poll[0];
+                int x = poll[1];
+                int y = poll[2];
+
+
+
+                for(int i=0; i<4; i++){
+                    int nx = x + dx[i];
+                    int ny = y + dy[i];
+
+                    if(nx<0 || ny<0 || nx>=n || ny>=m) continue;
+                    if(map[h][nx][ny] == -1)continue;
+                    if(vit[h][nx][ny] == true)continue;
+
+                    map[h][nx][ny] = 1;
+                    zero--;
+                    q.add(new int[]{h,nx,ny});
+                    vit[h][nx][ny] = true;
+
+
                 }
+                if(h-1>=0){ //아래칸 있으면
+                    if(map[h-1][x][y] != -1){
+                        if(vit[h-1][x][y] != true){
+                            map[h-1][x][y] = 1;
+                            zero--;
+                            q.add(new int[]{h-1,x,y});
+                            vit[h-1][x][y] = true;
+                        }
+                    }
+
+                }
+                if(h+1<c){ //윗칸 있으면
+                    if(map[h+1][x][y] != -1) {
+                        if(vit[h+1][x][y] != true) {
+                            map[h+1][x][y] = 1;
+                            zero--;
+                            q.add(new int[]{h+1,x,y});
+                            vit[h+1][x][y] = true;
+
+                        }
+                    }
+                }
+
             }
+        
         }
 
-        q.addAll(q2);
-        q2.clear();
+
+        return -1;
     }
 
 
 }
+
