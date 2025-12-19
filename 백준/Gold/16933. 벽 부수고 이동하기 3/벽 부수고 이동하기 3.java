@@ -72,7 +72,9 @@ public class Main {
                             q.add(new int[]{nx, ny, brk + 1, dist + 1, 1});
                         }
                     } else if(sun == 1 && brk < k){ //밤이면서 벽 부실수있으면
-                        q.add(new int[]{x, y, brk, dist + 1, 0});
+                        if(broken[nx][ny] > brk){
+                            q.add(new int[]{x, y, brk, dist + 1, 0});    
+                        }
                     }
                 }
 
