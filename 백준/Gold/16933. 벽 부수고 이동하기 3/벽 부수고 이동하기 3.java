@@ -56,24 +56,24 @@ public class Main {
                 if(map[nx][ny] == 0){
                     if (broken[nx][ny] > brk) {
                         broken[nx][ny] = brk;
-                        if(sun == 0){
-                            q.add(new int[]{nx, ny, brk, dist + 1, 1});
-                        } else{
-                            q.add(new int[]{nx, ny, brk, dist + 1, 0});
+                        if(sun == 0){ //낮 + 빈공간
+                            q.add(new int[]{nx, ny, brk, dist + 1, 1}); //거리 증가 + 밤으로 변경
+                        } else{ //밤 + 빈공간
+                            q.add(new int[]{nx, ny, brk, dist + 1, 0}); //거리 증가 + 낮으로 변경
                         }
 
                     }
                 }
                 //벽인 경우
                 else{
-                    if(sun == 0 && brk < k){ //낮이면서 벽 부실수있으면
-                        if(broken[nx][ny] > brk +1){
-                            broken[nx][ny] = brk + 1;
-                            q.add(new int[]{nx, ny, brk + 1, dist + 1, 1});
+                    if(sun == 0 && brk < k){ //낮이면서 벽이면
+                        if(broken[nx][ny] > brk + 1){ // 다음 좌표가 현재 벽뿌 횟수 + 1 보다 적게 도착한적이 있으면 안가도 됨
+                            broken[nx][ny] = brk + 1; // 다음좌표 벽뿌 횟수 수정
+                            q.add(new int[]{nx, ny, brk + 1, dist + 1, 1}); //거리 증가 + 벽뿌 + 밤으로 변경
                         }
                     } else if(sun == 1 && brk < k){ //밤이면서 벽 부실수있으면
-                        if(broken[nx][ny] > brk){
-                            q.add(new int[]{x, y, brk, dist + 1, 0});    
+                        if(broken[nx][ny] > brk){ //다음 좌표가 현재 벽뿌보다 적게 도착한적이 있으면 현위치에서 대기 안해도 됨
+                            q.add(new int[]{x, y, brk, dist + 1, 0}); // 현위치 + 대기 + 낮으로 변경
                         }
                     }
                 }
