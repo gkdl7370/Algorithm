@@ -47,10 +47,6 @@ public class Main {
         search();
 
         for(int i=1; i<=v; i++){
-            if(i == start){
-                System.out.println(0);
-                continue;
-            }
             if(value[i] < Integer.MAX_VALUE) System.out.println(value[i]);
             else System.out.println("INF");
         }
@@ -59,14 +55,14 @@ public class Main {
     private static void search(){
         q = new PriorityQueue<>();
         q.add(new Node(start,0));
+        value[start] = 0;
 
         while(!q.isEmpty()){
             Node poll = q.poll();
             int now = poll.point;
             int dist = poll.dist;
 
-            if(value[now] < dist) continue;
-            
+
             for(int i=0; i<list[now].size(); i++){
                 int next = list[now].get(i).point;
                 int nextDist = list[now].get(i).dist;
