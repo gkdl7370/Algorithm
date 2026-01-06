@@ -1,88 +1,96 @@
 
+import java.util.*;
 import java.io.*;
-class Main{
-    static int N, M;
-    static int[][] block = new int[10][10];
-    static int[][] c_block = new int[10][10];
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
-        String[] str = bf.readLine().split(" ");
+public class Main{
+    static int[] dx = {0,1,-1,0};
+    static int[] dy = {1,0,0,-1};
+    static int n, m, result = 0;
+    static int map[][];
+    static boolean vit[][];
+    static ArrayList<int[]> virus;
 
-        N = Integer.parseInt(str[0]);
-        M = Integer.parseInt(str[1]);
+    public static void main(String args[])throws IOException{
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
 
-        for(int i = 0; i < N; i++){
-            str = bf.readLine().split(" ");
-            for(int j = 0; j < M; j++){
-                block[i][j] = Integer.parseInt(str[j]);
+        n = Integer.parseInt(st.nextToken());
+        m = Integer.parseInt(st.nextToken());
+        map = new int[n][m];
+
+        virus = new ArrayList<>();
+
+        for(int i=0; i<n; i++){
+            st = new StringTokenizer(br.readLine());
+            for(int j=0; j<m; j++){
+                int num = Integer.parseInt(st.nextToken());
+                if(num == 2) virus.add(new int[]{i,j});
+                map[i][j] = num;
             }
         }
 
-        System.out.println(b_force(3));
+        wall(0,0);
 
+        System.out.print(result);
     }
 
-
-
-    public static int b_force(int r_wall){
-        int local_max = 0;
-        int ret;
-        if(r_wall <=0){
-            return safe_space();
-        }
-        for(int n1 = 0; n1 < N; n1++){
-            for(int m1 = 0; m1 < M; m1++){
-                if(block[n1][m1] != 0){
-                    continue;
-                }
-
-                block[n1][m1] = 1;
-                ret = b_force(r_wall - 1);
-                if(ret > local_max){
-                    local_max = ret;
-                }
-                block[n1][m1] = 0;
-            }
+    private static void wall(int dep,int start){
+        if(dep == 3){
+            vit = new boolean[n][m];
+            result = Math.max(result,search());
+            return;
         }
 
-        return local_max;
-    }
+        // 2차원 배열을 1차원적으로 탐색하여 중복 제거
+        for (int i = start; i < n * m; i++) {
+            int r = i / m;
+            int c = i % m;
 
-    public static int safe_space(){
-        int count = 0;
-        for(int n = 0; n < N; n++){
-            for(int m = 0; m < M; m++){
-                c_block[n][m] = block[n][m];
-            }
-        }
-        for(int n = 0; n < N; n++){
-            for(int m = 0; m < M; m++){
-                if(c_block[n][m] == 2){
-                    virus_test(n,m);
-                }
-            }
-        }
-        for(int n = 0; n < N; n++){
-            for(int m = 0; m < M; m++){
-                if(c_block[n][m] == 0){
-                    count++;
-                }
-            }
-        }
-        return count;
-    }
-
-    public static void virus_test(int x, int y){
-        int[] dx = {1,-1,0,0};
-        int[] dy = {0,0,1,-1};
-        for(int i = 0; i < 4; i++){
-            int nx = x + dx[i];
-            int ny = y + dy[i];
-            if(nx >= 0 && nx < N && ny >= 0 && ny < M && c_block[nx][ny] == 0){
-                c_block[nx][ny] = 2;
-                virus_test(nx,ny);
+            if (map[r][c] == 0) {
+                map[r][c] = 1;
+                wall(dep + 1,i + 1);
+                map[r][c] = 0;
             }
         }
     }
+
+    private static int search(){
+        Queue<int[]> q = new LinkedList<>();
+        for(int i=0; i<virus.size(); i++){
+            q.add(virus.get(i));
+        }
+        int val = 0;
+        while(!q.isEmpty()){
+            int poll[] = q.poll();
+
+            int x = poll[0];
+            int y = poll[1];
+            vit[x][y] = true;
+
+            for(int i=0; i<4; i++){
+                int nx = x + dx[i];
+                int ny = y + dy[i];
+
+                if(nx<0 || ny<0 || nx>=n || ny>=m) continue;
+                if(map[nx][ny] == 1) continue;
+                if(map[nx][ny] == 2) continue;
+                if(vit[nx][ny] == true) continue;
+
+                q.add(new int[]{nx,ny});
+                vit[nx][ny] = true;
+
+            }
+
+        }
+
+        for(int i=0; i<n; i++){
+            for(int j=0; j<m; j++){
+                if(map[i][j] == 1) continue;
+                if(vit[i][j] == true) continue;
+                val++;
+            }
+        }
+        return val;
+    }
+
 }
