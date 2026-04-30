@@ -1,0 +1,84 @@
+import java.io.*;
+import java.util.*;
+class Main {
+	static int n,a;
+	static int chil1[];
+	static int chil2[];
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());;
+
+		n = Integer.parseInt(st.nextToken());
+
+		while(n>0){
+			chil1 = new int[5];
+			chil2 = new int[5];
+			
+			for(int k=0; k<2; k++){
+				st = new StringTokenizer(br.readLine());
+				int a = Integer.parseInt(st.nextToken());
+				for(int i=0; i<a; i++){
+					int num = Integer.parseInt(st.nextToken());
+					if(k==0){
+						chil1[num]++;
+					} else{
+						chil2[num]++;
+					}
+				}
+			}
+
+			//별4 동3 네2 세1
+			int win = 0;
+			while(true){
+				if(chil1[4] > chil2[4]){ // 별의 갯수로만 판단 강우한 경우
+					win = 1;
+					break;
+				} else if(chil1[4] < chil2[4]){
+					win = 2;
+					break;
+				} 
+
+				if(chil1[3] > chil2[3]){ // 별 동그라미
+					win = 1;
+					break;
+				} else if(chil1[3] < chil2[3]){
+					win = 2;
+					break;
+				} 
+
+				if(chil1[2] > chil2[2]){ // 별 동그라미 네모
+					win = 1;
+					break;
+				} else if(chil1[2] < chil2[2]){
+					win = 2;
+					break;
+				}
+
+				if(chil1[1] > chil2[1]){ // 별의 동그라미 네모 세모
+					win = 1;
+					break;
+				} else if(chil1[1] < chil2[1]){
+					win = 2;
+					break;
+				} else{
+					win = 3;
+					break;
+				}
+			}
+
+			if(win == 1){
+				System.out.println("A");
+			} else if(win == 2){
+				System.out.println("B");
+			} else if(win == 3){
+				System.out.println("D");
+			} 
+			n--;
+		}
+
+		
+		
+		
+		
+	}
+}
