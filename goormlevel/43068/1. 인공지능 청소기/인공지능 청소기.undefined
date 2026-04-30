@@ -1,0 +1,44 @@
+import java.io.*;
+import java.util.*;
+class Main {
+	static int dx[] = {1,-1,0,0};
+	static int dy[] = {0,0,-1,1};
+	static int T,x,y;
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
+
+		T = Integer.parseInt(br.readLine());
+
+		while(T-- > 0){
+			st = new StringTokenizer(br.readLine());
+
+			int x = Integer.parseInt(st.nextToken());
+			int y = Integer.parseInt(st.nextToken());
+
+			int n = Integer.parseInt(st.nextToken());
+
+
+			int val = check(x,y,n);
+
+			if(val == 1){
+				System.out.println("YES");
+			} else{
+				System.out.println("NO");
+			}
+		}
+	}
+
+	public static int check(int x, int y, int n){
+		int len = Math.abs(x) + Math.abs(y);
+
+		if(n < len)	return -1;
+		
+		if ((n - len) % 2 == 0) {
+            return 1;
+        } else {
+            return -1;
+        }
+		
+	}
+}
