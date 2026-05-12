@@ -2,21 +2,24 @@ import java.util.*;
 
 public class Solution {
     public int[] solution(int []arr) {
-         if (arr.length == 0) {
-            return new int[0];
-        }
-
-        int[] temp = new int[arr.length];
-        int size = 0;
-
-        temp[size++] = arr[0];
-
-        for (int i = 1; i < arr.length; i++) {
-            if (arr[i] != arr[i - 1]) {
-                temp[size++] = arr[i];
+        int numbers[] = new int[arr.length];
+        
+        numbers[0] = arr[0];
+        int size = 1;
+        
+        for(int i=1; i<arr.length; i++){
+            if(arr[i] != arr[i-1]){
+                numbers[size] = arr[i];
+                size++;
             }
         }
-
-        return Arrays.copyOf(temp, size);
+        
+        int result[] = new int[size];
+        
+        for(int i=0; i<size; i++){
+            result[i] = numbers[i];
+        }
+        
+        return result;
     }
 }
