@@ -1,17 +1,22 @@
-import java.util.Arrays;
+import java.util.*;
 class Solution {
     public String solution(String[] participant, String[] completion) {
-        Arrays.sort(participant);
-        Arrays.sort(completion);
-
-        for (int i=0; i<completion.length; i++) {
-        if (participant[i].equals(completion[i])) {
-            continue;
-            } else {
-            return participant[i];
+        Map<String, Integer> map = new HashMap<>();
+        
+        for(String name : participant){
+            map.put(name, map.getOrDefault(name,0) + 1);
+        }
+        
+        for(String name : completion){
+            map.put(name, map.get(name) - 1);
+        }
+        
+        for(String name : map.keySet()){
+            if(map.get(name) > 0){
+                return name;
             }
         }
-
-        return participant[participant.length-1];
+        
+        return "error";
     }
 }
